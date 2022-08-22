@@ -89,6 +89,12 @@ fun check_pat(p) =
 check_pat(TupleP [Variable "sdfsdfsdf", Variable "sdfsdfsdf"]);
 
 
+
+
+
+
+fun first_match v ps =
+let
 fun match(v, p) = 
     case (p, v) of
 	(Wildcard, _) => SOME []
@@ -100,9 +106,7 @@ fun match(v, p) =
 				 else NONE
       | (ConstructorP(s1,pp), Constructor(s2,vv)) => if s1 = s2 then match(vv,pp) else NONE
       | _ => NONE;
-
-
-
-fun first_match v ps = 
-    ( SOME(first_answer (fn p => match(v,p)) ps) ) handle NoAnswer => NONE;
-	first_match(Const 12, [ConstP 11, Variable "asdasd", ConstP 12]);
+	  in
+    ( SOME(first_answer (fn p => match(v,p)) ps) ) handle NoAnswer => NONE
+	end;
+	first_match (Constructor ("my_constructor", Const 12)) [ConstructorP ("my_constructor", Variable "my_var"),ConstP 12,ConstP 11, Variable "asdasd"];
