@@ -89,24 +89,20 @@ fun check_pat(p) =
 check_pat(TupleP [Variable "sdfsdfsdf", Variable "sdfsdfsdf"]);
 
 
-
-
-
-
 fun first_match v ps =
 let
-fun match(v, p) = 
+fun match(p, v) = 
     case (p, v) of
 	(Wildcard, _) => SOME []
       | (Variable s, _) => SOME [(s,v)]
       | (UnitP, Unit) => SOME []
       | (ConstP cp, Const cv) => if cp = cv then SOME [] else NONE
       | (TupleP ps, Tuple vs) => if List.length ps = List.length vs 
-				 then all_answers (fn (vs',ps') => match(vs',ps')) (ListPair.zip(vs,ps))
+				 then all_answers (fn (vs',ps') => match(ps',vs')) (ListPair.zip(vs,ps))
 				 else NONE
-      | (ConstructorP(s1,pp), Constructor(s2,vv)) => if s1 = s2 then match(vv,pp) else NONE
+      | (ConstructorP(s1,pp), Constructor(s2,vv)) => if s1 = s2 then match(pp,vv) else NONE
       | _ => NONE;
 	  in
-    ( SOME(first_answer (fn p => match(v,p)) ps) ) handle NoAnswer => NONE
+    ( SOME(first_answer (fn p => match(p,v)) ps) ) handle NoAnswer => NONE
 	end;
-	first_match (Constructor ("my_constructor", Const 12)) [ConstructorP ("my_constructor", Variable "my_var"),ConstP 12,ConstP 11, Variable "asdasd"];
+	first_match (Constructor ("Constructor", Const 12)) [ConstructorP ("Constructor", Variable "Var"),ConstP 12,ConstP 11, Variable "asdasd"];
